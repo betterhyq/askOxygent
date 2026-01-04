@@ -1,9 +1,9 @@
 /**
- * 从 SSE 流中提取 answer 类型的 content
- * 建立长连接，遇到 type=answer 时立即返回响应
- * @param url - 请求的 URL
- * @param postData - POST 请求的数据
- * @returns 返回 answer 类型数据的 content 字段
+ * Extract content from answer type in SSE stream
+ * Establish a long connection and return response immediately when type=answer is encountered
+ * @param url - The request URL
+ * @param postData - POST request data
+ * @returns Returns the content field of answer type data
  */
 export const fetchSSEAnswer = async (
   url: string,
@@ -18,11 +18,11 @@ export const fetchSSEAnswer = async (
   });
 
   if (!response.ok) {
-    throw new Error(`请求失败：${response.status}`);
+    throw new Error(`Request failed: ${response.status}`);
   }
 
   if (!response.body) {
-    throw new Error('响应体为空');
+    throw new Error('Response body is empty');
   }
 
   const reader = response.body.getReader();
@@ -53,15 +53,15 @@ export const fetchSSEAnswer = async (
         try {
           const jsonData = JSON.parse(data);
           if (jsonData.type === 'answer' && jsonData.content) {
-            reader.cancel(); // 找到答案后立即关闭连接
+            reader.cancel(); // Close connection immediately after finding the answer
             return jsonData.content;
           }
         } catch {
-          // 忽略解析错误
+          // Ignore parsing errors
         }
       }
     }
   }
 
-  throw new Error('未找到 answer 类型的响应');
+  throw new Error('Answer type response not found');
 };
